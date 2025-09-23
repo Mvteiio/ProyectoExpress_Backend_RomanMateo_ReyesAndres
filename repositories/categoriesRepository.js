@@ -3,7 +3,7 @@ const Database = require('../db');
 
 class UserRepository {
     constructor() {
-        this.collectionName = 'users'; 
+        this.collectionName = 'categories'; 
         this.collection = null; 
     }
 
@@ -15,21 +15,15 @@ class UserRepository {
         return this.collection;
     }
 
-    async create(user) {
+    async create(categories) {
         const collection = await this.getCollection();
-        const result = await collection.insertOne(user);
+        const result = await collection.insertOne(categories);
         return collection.findOne({ _id: result.insertedId });
     }
 
-    async findByEmail(email) {
+    async findById(name) {
         const collection = await this.getCollection();
-        const result = await collection.findOne({email: email});
-        return result;
-    }
-
-    async findById(id) {
-        const collection = await this.getCollection();
-        const result = await collection.findOne({_id: new ObjectId(id)});
+        const result = await collection.findOne({name: name});
         return result;
     }
 
@@ -37,11 +31,17 @@ class UserRepository {
         const collection = await this.getCollection();
         const result = await collection.find({}).toArray();
         return result;
+    }   
+
+    async update(id, updatedCategory) {
+        const collection = await this.getCollection();
+        const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: updatedCategory });                         
+        return result; 
     }
 
     async delete(id) {
         const collection = await this.getCollection();
-        const result = await collection.deleteOne({ identificacion: Number(id) });
+        const result = await collection.deleteOne({ _id: new ObjectId(id) });
         return result; 
     }
 }
