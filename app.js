@@ -4,8 +4,10 @@ const express = require('express');
 const Database = require('./db'); 
 const passport = require('passport'); 
 const userRoutes = require('./routes/userRoutes'); 
-const categoriesRoutes = require('./routes/categoriesRoutes'); 
+const categoriesRoutes = require('./routes/categoriesRoutes');
+const contentRoutes = require('./routes/contentRoutes'); 
 const configureJwtStrategy = require('./config/passport-config');
+
 
 const app = express();
 app.use(express.json());
@@ -19,6 +21,7 @@ const PORT = process.env.PORT || 3000;
 // Rutas de la API
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/categories', categoriesRoutes);
+app.use('/api/v1/movies', contentRoutes);
 
 
 async function startServer(){

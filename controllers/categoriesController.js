@@ -1,6 +1,5 @@
 const CategoriesRepository = require('../repositories/categoriesRepository');
 
-
 class categoriesController {
     constructor(){
         

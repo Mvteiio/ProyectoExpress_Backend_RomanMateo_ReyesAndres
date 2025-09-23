@@ -33,6 +33,13 @@ class UserRepository {
         return result;
     }   
 
+    async findByName(name) {
+        const collection = await this.getCollection();
+        // Búsqueda insensible a mayúsculas/minúsculas para mejor UX
+        const result = await collection.findOne({ name: { $regex: `^${name}$`, $options: 'i' } });
+        return result;
+    }
+
     async update(id, updatedCategory) {
         const collection = await this.getCollection();
         const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: updatedCategory });                         
