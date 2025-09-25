@@ -1,5 +1,6 @@
 const CategoriesRepository = require('../repositories/categoriesRepository');
 const ContentRepository = require('../repositories/contentRepository')
+const { ObjectId } = require('mongodb');
 
 class categoriesController {
     constructor(){
@@ -9,6 +10,7 @@ class categoriesController {
     async createMovie(req, res){
         try {
             const {title, description, year, imageUrl, categoryIds} = req.body;
+            const categoryObjectIds = categoryIds.map(id => new ObjectId(id));
             const existingMovie = await ContentRepository.findByTitle(title);
 
             if(existingMovie){
@@ -22,7 +24,7 @@ class categoriesController {
                 description,
                 year,
                 imageUrl,
-                categoryIds,
+                categoryIds: categoryObjectIds,
                 createdAt: new Date()
             });
             res.status(201).json({
@@ -42,7 +44,7 @@ class categoriesController {
     
             if (category) {
                 const categoryDoc = await CategoriesRepository.findByName(category);    
-    
+                 console.log('Documento de categoría encontrado:', categoryDoc);
                 if (categoryDoc) {
                     categoryId = categoryDoc._id; 
                 } else {
@@ -62,46 +64,66 @@ class categoriesController {
         }
     }
 
-    // async getAllCategories(req, res){
-    //     try{
-    //         const categories = await CategoriesRepository.findAll();
-    //         res.status(200).json({
-    //             msg: "Todas las categorias",
-    //             data: categories
-    //         })
-    //     }
-    //     catch(err){
-    //         res.status(500).json({error: err.message});
-    //     }
-    // }
+    async getMovieById(req, res) {
+        try {
+            const { id } = req.params; 
 
-    // async updateCategory(req, res){
-    //     try {
-    //         const { id } = req.params;
-    //         const { name } = req.body;
+            const movie = await ContentRepository.findByIdWithReviews(id);
 
-    //         await CategoriesRepository.update(id, { name }); 
+            if (!movie) {
+                return res.status(404).json({ msg: "Película no encontrada" });
+            }
 
-    //         res.status(200).json({
-    //             msg: "Categoría actualizada con éxito."
-    //         })
-    //     } catch(err) {
-    //         res.status(500).json({error: err.message});
-    //     }
-    // }
+            res.status(200).json({
+                msg: "Película obtenida con éxito",
+                data: movie
+            });
 
-    // async deleteCategory(req, res){
-    //     try {
-    //         const { id } = req.params;
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
 
-    //         await CategoriesRepository.delete(id); 
-    //         res.status(200).json({
-    //             msg: "Categoría eliminada con éxito."
-    //         })
-    //     } catch(err) {
-    //         res.status(500).json({error: err.message});
-    //     }
-    // }
+    async getRankedMovies(req, res) {
+    try {
+        const movies = await ContentRepository.getRankedMovies();
+        res.status(200).json({ data: movies });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+
+    async updateMovie(req, res) {
+        try {
+            const { id } = req.params; 
+            const updateData = req.body; 
+
+            const result = await ContentRepository.update(id, updateData);
+
+            if (result.matchedCount === 0) {
+                return res.status(404).json({ msg: "Película no encontrada" });
+            }
+
+            res.status(200).json({ msg: "Película actualizada con éxito" });
+
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    async deleteMovie(req, res){
+        try {
+            const { id } = req.params;
+
+            await contentRepository.delete(id); 
+            res.status(200).json({
+                msg: "Pelicula eliminada con éxito."
+            })
+        } catch(err) {
+            res.status(500).json({error: err.message});
+        }
+    }
 
 }
 

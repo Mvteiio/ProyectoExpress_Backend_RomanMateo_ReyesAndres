@@ -1,12 +1,21 @@
 require('dotenv').config();
 
 const express = require('express');
+
 const Database = require('./db'); 
+
 const passport = require('passport'); 
+const configureJwtStrategy = require('./config/passport-config');
+
+const swaggerUi = require('swagger-ui-express'); 
+const swaggerDocs = require('./swagger-docs');
+
 const userRoutes = require('./routes/userRoutes'); 
 const categoriesRoutes = require('./routes/categoriesRoutes');
-const contentRoutes = require('./routes/contentRoutes'); 
-const configureJwtStrategy = require('./config/passport-config');
+const contentRoutes = require('./routes/contentRoutes');
+const reviewsRoutes = require('./routes/reviewsRoutes');
+
+
 
 
 const app = express();
@@ -18,10 +27,13 @@ configureJwtStrategy(passport);
 
 const PORT = process.env.PORT || 3000;
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 // Rutas de la API
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/categories', categoriesRoutes);
 app.use('/api/v1/movies', contentRoutes);
+app.use('/api/v1/reviews', reviewsRoutes);
 
 
 async function startServer(){
@@ -39,3 +51,4 @@ async function startServer(){
 }
 
 startServer();
+
