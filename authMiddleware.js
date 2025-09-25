@@ -1,14 +1,12 @@
-export const checkRole = (roles) => {
+const checkRole = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ msg: 'Acceso denegado' });
+    }
+    next();
+  };
+};
 
-    return (req, res, next) => {
-        const userRole = req.user.role;
-        if (roles.includes(userRole)) {
-            return next();
-            
-        } else {
-            return res.status(403).json({
-                msg: "Acceso denegado. No tienes los permisos necesarios."
-            });
-        }
-    };
+module.exports = {
+    checkRole
 };
