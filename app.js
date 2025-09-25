@@ -21,6 +21,12 @@ const reviewsRoutes = require('./routes/reviewsRoutes');
 const app = express();
 app.use(express.json());
 
+const allowedOrigins = [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'https://andres8073562.github.io/' 
+];
+
 // --- CONFIGURACIÓN DE PASSPORT ---
 app.use(passport.initialize());
 configureJwtStrategy(passport);
