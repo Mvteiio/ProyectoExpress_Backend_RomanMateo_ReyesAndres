@@ -27,6 +27,21 @@ const allowedOrigins = [
     'https://andres8073562.github.io/' 
 ];
 
+const corsOptions = {
+    origin: (origin, callback) => {
+        // Permite peticiones sin origen (como las de Postman en algunas versiones o apps móviles)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('No permitido por CORS'));
+        }
+    }
+};
+
+app.use(cors(corsOptions));
+
 // --- CONFIGURACIÓN DE PASSPORT ---
 app.use(passport.initialize());
 configureJwtStrategy(passport);
