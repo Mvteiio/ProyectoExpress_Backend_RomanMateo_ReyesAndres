@@ -23,13 +23,57 @@ class contentRepository {
 
     async findAll(options = {}) {
         const collection = await this.getCollection();
-        const query = {};
-    
-        if (options.categoryId) {
-            query.categoryIds = options.categoryId;
+
+        const { categoryId, sortBy } = options;
+        const pipeline = [];
+
+        // --- ETAPA 1: $match (Filtro inicial) ---
+        // Si se pasó un categoryId, lo aplicamos primero para reducir los documentos a procesar.
+        const matchStage = {};
+        if (categoryId) {
+            matchStage.categoryIds = categoryId;
         }
-    
-        const result = await collection.find(query).toArray();
+        // Añadimos la etapa de match al pipeline (aunque esté vacía, no afecta)
+        pipeline.push({ $match: matchStage });
+
+        // --- ETAPA 2: $lookup (Contar las reseñas) ---
+        // Unimos con 'reviews' y contamos cuántas hay para cada película
+        pipeline.push({
+            $lookup: {
+                from: 'reviews',
+                localField: '_id',
+                foreignField: 'contentId',
+                as: 'reviews'
+            }
+        });
+
+        // --- ETAPA 3: $addFields (Crear el campo de conteo) ---
+        // Creamos un nuevo campo 'reviewCount' con el tamaño del arreglo 'reviews'
+        pipeline.push({
+            $addFields: {
+                reviewCount: { $size: '$reviews' }
+            }
+        });
+
+        // --- ETAPA 4: $sort (Ordenamiento dinámico) ---
+        const sortStage = {};
+        if (sortBy === 'popular') {
+            sortStage.reviewCount = -1; // Ordenamos por el número de reseñas de mayor a menor
+        }
+        // Por defecto, podríamos ordenar por año o título si no se especifica 'popular'
+        sortStage.year = -1; // Ordenar por año como fallback
+        
+        pipeline.push({ $sort: sortStage });
+
+        // --- ETAPA 5: $project (Limpiar el resultado) ---
+        // No queremos devolver el arreglo completo de reviews, solo el conteo
+        pipeline.push({
+            $project: {
+                reviews: 0 // Excluimos el campo 'reviews' del resultado final
+            }
+        });
+
+        const result = await collection.aggregate(pipeline).toArray();
         return result;
     }
 
@@ -54,7 +98,15 @@ class contentRepository {
                             // --- Inicio del Pipeline Anidado ---
                             // 1. Encuentra solo las reseñas que pertenecen a esta película
                             { $match: { $expr: { $eq: ['$contentId', '$$movieId'] } } },
-                            
+                            // este lookup es para encontrar el username del q hizo la reseña
+                            {
+                                $lookup: {
+                                    from: 'users', // La colección de usuarios
+                                    localField: 'userId', // El campo en la colección 'reviews'
+                                    foreignField: '_id', // El campo en la colección 'users'
+                                    as: 'authorDetails' // Guardamos la info del autor aquí
+                                }
+                            },
                             // 2. Haz otro "JOIN", esta vez con las interacciones de cada reseña
                             {
                                 $lookup: {
@@ -93,16 +145,16 @@ class contentRepository {
                             // ETAPA FINAL: Proyecta para quedarte solo con los campos que necesitas.
                         {
                             $project: {
-                                _id: 1, // 1 significa "incluir este campo"
+                                _id: 1,
                                 contentId: 1,
-                                userId: 1,
                                 title: 1,
                                 comment: 1,
                                 rating: 1,
                                 createdAt: 1,
                                 likeCount: 1,
-                                dislikeCount: 1
-                                // Al no incluir 'movieId' o 'ratingNum', estos se descartan automáticamente.
+                                dislikeCount: 1,
+                                // Extraemos el primer (y único) username del arreglo 'authorDetails'
+                                username: { $arrayElemAt: ['$authorDetails.username', 0] }
                             }
                         }
                     ],
