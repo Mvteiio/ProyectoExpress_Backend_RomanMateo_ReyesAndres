@@ -150,6 +150,7 @@ class contentRepository {
                                 title: 1,
                                 comment: 1,
                                 rating: 1,
+                                rating: 1,
                                 createdAt: 1,
                                 likeCount: 1,
                                 dislikeCount: 1,
