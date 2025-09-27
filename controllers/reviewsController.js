@@ -8,33 +8,30 @@ class reviewsController {
     }
 
     async createReview(req, res) {
-        try {
+    try {
+        const { movieId, title, comment, rating } = req.body;
 
-            const { movieId, title, comment, rating } = req.body;
+        const ratingNum = Number(rating);
+        const movieIdObject = new ObjectId(movieId);
+        const userId = req.user._id; 
 
-            const ratingNum = Number(rating)
-            const movieIdObject = new ObjectId(movieId);
+        const reviewData = {
+            contentId: movieIdObject,
+            userId: userId, 
+            title,
+            comment,
+            rating: ratingNum, 
+            createdAt: new Date()
+        };
 
-           
-            const userId = req.user._id; 
+        const newReview = await ReviewsRepository.create(reviewData);
 
-            const reviewData = {
-                contentId: movieIdObject,
-                userId: userId, 
-                title,
-                comment,
-                ratingNum,
-                createdAt: new Date()
-            };
+        res.status(201).json({ msg: "Reseña creada con éxito", data: newReview });
 
-            const newReview = await ReviewsRepository.create(reviewData);
-
-            res.status(201).json({ msg: "Reseña creada con éxito", data: newReview });
-
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
+}
 
     async updateReview(req, res) {
     try {
