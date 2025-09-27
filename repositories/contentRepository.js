@@ -169,6 +169,7 @@ class contentRepository {
         ];
 
         const result = await collection.aggregate(pipeline).toArray();
+        console.log("Datos que el backend está a punto de enviar:", JSON.stringify(result, null, 2));
         return result[0];
     }
 
