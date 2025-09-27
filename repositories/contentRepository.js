@@ -160,7 +160,12 @@ class contentRepository {
                     ],
                     as: 'reviews'
                 }
+            },
+            {
+            $addFields: {
+                averageRating: { $avg: '$reviews.rating' }
             }
+        }
         ];
 
         const result = await collection.aggregate(pipeline).toArray();
