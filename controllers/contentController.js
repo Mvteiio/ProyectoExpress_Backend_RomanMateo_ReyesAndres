@@ -38,31 +38,33 @@ class categoriesController {
     }
 
     async getAllMovies(req, res) {
-        try {
-            const {category} = req.query;
-            let categoryId = null;
-    
-            if (category) {
-                const categoryDoc = await CategoriesRepository.findByName(category);    
-                 console.log('Documento de categoría encontrado:', categoryDoc);
-                if (categoryDoc) {
-                    categoryId = categoryDoc._id; 
-                } else {
-                    return res.status(200).json({ data: [] });
-                }
+
+    try {
+        const { category, sortBy } = req.query;
+        let categoryId = null;
+
+        if (category) {
+            const categoryDoc = await CategoriesRepository.findByName(category);
+            console.log('Documento de categoría encontrado:', categoryDoc);
+            if (categoryDoc) {
+                categoryId = categoryDoc._id;
+            } else {
+                return res.status(200).json({ data: [] });
             }
-    
-            const movies = await ContentRepository.findAll({categoryId});
-    
-            res.status(200).json({
-                msg: "Películas obtenidas con éxito",
-                data: movies
-            });
-    
-        } catch (err) {
-            res.status(500).json({ error: err.message });
         }
+
+        
+        const movies = await ContentRepository.findAll({ categoryId, sortBy });
+
+        res.status(200).json({
+            msg: "Películas obtenidas con éxito",
+            data: movies
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
+}
 
     async getMovieById(req, res) {
         try {
