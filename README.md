@@ -112,54 +112,7 @@ Documentación: La API está documentada en vivo con Swagger UI, accesible en: h
 
 |-- [3.1.swagger_docs](swagger_docs.js)
 
- ## Estrutura
-|-- [1.Config](config)
 
-  
-
-|-- [1.1.controllers](controllers)
-
-  
-
-|-- [1.1.1.repositories](repositories)
-
-  
-
-|-- [1.2.routes](routes)
-
-  
-
-|-- [1.3.gitignore](.gitignore)
-
-  
-
-│-- [2.Readme](README.md)
-
-  
-
-|-- [2.1.app](app.js)
-
-  
-
-|-- [2.1.1.authMiddleware](authMiddleware.js)
-
-  
-
-|-- [2.2.db](db.js)
-
-  
-
-|-- [2.3.packaje-lock.json](packaje-lock.json)
-
-  
-
-|-- [3.package.json](package.json)
-
-  
-
-|-- [3.1.swagger_docs](swagger_docs.js)
-
- 
   
 ## Readme Base de datos
 [Base de datos](//BaseDatos.md)
