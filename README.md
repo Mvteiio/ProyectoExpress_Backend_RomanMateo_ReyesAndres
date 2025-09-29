@@ -120,7 +120,7 @@ Documentación: La API está documentada en vivo con Swagger UI, accesible en: h
  ## Créditos
 ####  Este proyecto fue desarrollado por:
 
-[Román Mateo]()
+[Román Mateo](https://github.com/Mvteiio)
 
 [Reyes Andrés](https://github.com/andres8073562)
 
@@ -128,4 +128,5 @@ Documentación: La API está documentada en vivo con Swagger UI, accesible en: h
 (https://github.com/andres8073562/ProyectoExpress_Frontend_RomanMateo_ReyesAndres).
 
 Repositorio Frontend: [PENDIENTE: Insertar enlace al repo del frontend aquí]
+
 
