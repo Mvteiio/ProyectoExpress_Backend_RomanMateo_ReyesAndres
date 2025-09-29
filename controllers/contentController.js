@@ -40,7 +40,7 @@ class categoriesController {
     async getAllMovies(req, res) {
 
     try {
-        const { category, sortBy } = req.query;
+        const { category, sortBy, search } = req.query;
         let categoryId = null;
 
         if (category) {
@@ -54,7 +54,7 @@ class categoriesController {
         }
 
         
-        const movies = await ContentRepository.findAll({ categoryId, sortBy });
+        const movies = await ContentRepository.findAll({ categoryId, sortBy, search });
 
         res.status(200).json({
             msg: "Películas obtenidas con éxito",

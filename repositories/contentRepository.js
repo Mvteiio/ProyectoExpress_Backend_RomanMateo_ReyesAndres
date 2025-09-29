@@ -33,6 +33,13 @@ class contentRepository {
         if (categoryId) {
             matchStage.categoryIds = categoryId;
         }
+
+        if (search) {
+        // Usamos $regex para buscar texto que 'contenga' el término de búsqueda, esto es pa la barra de busqueda del front.
+        // La opción 'i' lo hace insensible a mayúsculas/minúsculas.
+        matchStage.title = { $regex: search, $options: 'i' };
+    }
+
         // Añadimos la etapa de match al pipeline (aunque esté vacía, no afecta)
         pipeline.push({ $match: matchStage });
 
