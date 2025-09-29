@@ -636,7 +636,54 @@ Registra cada "like" o "dislike" que un usuario le da a una reseña específica.
   "createdAt": "Date"
 }
 ```
-|-- [1.Ayuda](config)
 
+## Estrutura
+|-- [1.Config](config)
+
+  
+
+|-- [1.1.controllers](controllers)
+
+  
+
+|-- [1.1.1.repositories](repositories)
+
+  
+
+|-- [1.2.routes](routes)
+
+  
+
+|-- [1.3.gitignore](.gitignore)
+
+  
+
+│-- [2.Readme](README.md)
+
+  
+
+|-- [2.1.app](app.js)
+
+  
+
+|-- [2.1.1.authMiddleware](authMiddleware.js)
+
+  
+
+|-- [2.2.db](db.js)
+
+  
+
+|-- [2.3.packaje-lock.json](packaje-lock.json)
+
+  
+
+|-- [3.package.json](package.json)
+
+  
+
+|-- [3.1.swagger_docs](swagger_docs.js)
+
+ 
   
 
