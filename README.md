@@ -115,7 +115,7 @@ Documentación: La API está documentada en vivo con Swagger UI, accesible en: h
 
   
 ## Readme Base de datos
-[Base de datos](//BaseDatos.md)
+[Base de datos](/BaseDatos.md)
 
  ## Créditos
 ####  Este proyecto fue desarrollado por:
