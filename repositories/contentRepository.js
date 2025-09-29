@@ -24,7 +24,7 @@ class contentRepository {
     async findAll(options = {}) {
         const collection = await this.getCollection();
 
-        const { categoryId, sortBy } = options;
+        const { categoryId, sortBy, search } = options;
         const pipeline = [];
 
         // --- ETAPA 1: $match (Filtro inicial) ---
