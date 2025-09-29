@@ -636,3 +636,18 @@ Registra cada "like" o "dislike" que un usuario le da a una reseña específica.
   "createdAt": "Date"
 }
 ```
+
+├── [node_modules/](/node_modules/)      # Dependencias instaladas.
+├── [src/](/src/)                        # Código fuente de la aplicación
+│   ├── [api/](/src/api/)                # Define las rutas (endpoints) de la API (e.g., /api/v1).
+│   ├── [config/](/src/config/)          # Archivos de configuración (Passport, JWT, Swagger, DB).
+│   ├── [controllers/](/src/controllers/)# Contiene la lógica de negocio para manejar peticiones.
+│   ├── [middleware/](/src/middleware/)  # Funciones intermedias (verificación JWT, validaciones).
+│   ├── [models/](/src/models/)          # Define los esquemas de MongoDB (Usuarios, Películas, Reseñas).
+│   ├── [utils/](/src/utils/)            # Funciones de utilidad (Singleton, ranking, helpers).
+│   └── [index.js](/src/index.js)        # Punto de entrada y configuración de Express.
+├── [.env](/README.md)                   # Variables de entorno (NO se sube a GitHub).
+├── [.gitignore](/README.md)             # Archivo para ignorar carpetas y archivos como node_modules y .env.
+├── [package.json](/package.json)        # Metadatos y scripts del proyecto.
+└── README.md     
+
