@@ -121,6 +121,7 @@ class contentRepository {
                 {
                     $project: {
                         _id: 1,
+                        userId: 1,
                         contentId: 1,
                         title: 1,
                         comment: 1,
