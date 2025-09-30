@@ -90,8 +90,11 @@ class contentRepository {
         return result
     }
 
-    async findByIdWithReviews(id) {
-        const collection = await this.getCollection();
+    async findByIdWithReviews(id, userId = null) {
+    const collection = await this.getCollection();
+    
+    // Convertimos userId a ObjectId si existe
+    const userObjectId = userId ? new ObjectId(userId) : null;
 
         const pipeline = [
                 {

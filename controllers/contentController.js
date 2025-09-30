@@ -69,8 +69,9 @@ class categoriesController {
     async getMovieById(req, res) {
         try {
             const { id } = req.params; 
+            const userId = req.user ? req.user._id : null;
 
-            const movie = await ContentRepository.findByIdWithReviews(id);
+            const movie = await ContentRepository.findByIdWithReviews(id, userId);
 
             if (!movie) {
                 return res.status(404).json({ msg: "Película no encontrada" });
