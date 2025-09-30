@@ -21,6 +21,7 @@ class UserController {
             const existingUser = await UserRepository.findByEmail(email);
 
             if(existingUser){
+                
                 return res.status(400).json({
                 msg: "El usuario ya existe"
             });
