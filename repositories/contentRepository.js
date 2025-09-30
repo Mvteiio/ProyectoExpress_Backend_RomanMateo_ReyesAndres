@@ -149,6 +149,19 @@ class contentRepository {
                                     }
                                 }
                             },
+                            {
+                                $addFields: {
+                                    userInteraction: {
+                                        // Buscamos en el arreglo 'interactions'
+                                        $filter: {
+                                            input: '$interactions',
+                                            as: 'interaction',
+                                            // La condición es que el userId de la interacción sea el del usuario actual
+                                            cond: { $eq: ['$$interaction.userId', userObjectId] }
+                                        }
+                                    }
+                                }
+                            },
                             // ETAPA FINAL: Proyecta para quedarte solo con los campos que necesitas.
                         {
                             $project: {
@@ -162,7 +175,8 @@ class contentRepository {
                                 likeCount: 1,
                                 dislikeCount: 1,
                                 // Extraemos el primer (y único) username del arreglo 'authorDetails'
-                                username: { $arrayElemAt: ['$authorDetails.username', 0] }
+                                username: { $arrayElemAt: ['$authorDetails.username', 0] },
+                                userInteractionType: { $arrayElemAt: ['$userInteraction.type', 0] }
                             }
                         }
                     ],

@@ -118,7 +118,7 @@ class categoriesController {
         try {
             const { id } = req.params;
 
-            await contentRepository.delete(id); 
+            await ContentRepository.delete(id); 
             res.status(200).json({
                 msg: "Pelicula eliminada con éxito."
             })
