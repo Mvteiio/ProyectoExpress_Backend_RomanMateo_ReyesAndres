@@ -96,102 +96,48 @@ class contentRepository {
     // Convertimos userId a ObjectId si existe
     const userObjectId = userId ? new ObjectId(userId) : null;
 
-        const pipeline = [
+    const pipeline = [
+    { $match: { _id: new ObjectId(id) } },
+    {
+        $lookup: {
+            from: 'reviews',
+            let: { movieId: '$_id' },
+            pipeline: [
+                { $match: { $expr: { $eq: ['$contentId', '$$movieId'] } } },
+                { $lookup: { from: 'users', localField: 'userId', foreignField: '_id', as: 'authorDetails' } },
+                { $lookup: { from: 'interactions', localField: '_id', foreignField: 'reviewId', as: 'interactions' } },
                 {
-                    $match: { _id: new ObjectId(id) }
-                },
-                {
-                    $lookup: {
-                        from: 'reviews', 
-                        let: { movieId: '$_id' },
-                        pipeline: [
-                            // --- Inicio del Pipeline Anidado ---
-                            // 1. Encuentra solo las reseñas que pertenecen a esta película
-                            { $match: { $expr: { $eq: ['$contentId', '$$movieId'] } } },
-                            // este lookup es para encontrar el username del q hizo la reseña
-                            {
-                                $lookup: {
-                                    from: 'users', // La colección de usuarios
-                                    localField: 'userId', // El campo en la colección 'reviews'
-                                    foreignField: '_id', // El campo en la colección 'users'
-                                    as: 'authorDetails' // Guardamos la info del autor aquí
-                                }
-                            },
-                            // 2. Haz otro "JOIN", esta vez con las interacciones de cada reseña
-                            {
-                                $lookup: {
-                                    from: 'interactions',
-                                    localField: '_id',
-                                    foreignField: 'reviewId',
-                                    as: 'interactions'
-                                }
-                            },
-                            
-                            // 3. Añade los nuevos campos 'likeCount' y 'dislikeCount'
-                            {
-                                $addFields: {
-                                    likeCount: {
-                                        // Cuenta los elementos en el arreglo 'interactions' que son de tipo 'like'
-                                        $size: {
-                                            $filter: {
-                                                input: '$interactions',
-                                                as: 'interaction',
-                                                cond: { $eq: ['$$interaction.type', 'like'] }
-                                            }
-                                        }
-                                    },
-                                    dislikeCount: {
-                                        // Cuenta los elementos en el arreglo 'interactions' que son de tipo 'dislike'
-                                        $size: {
-                                            $filter: {
-                                                input: '$interactions',
-                                                as: 'interaction',
-                                                cond: { $eq: ['$$interaction.type', 'dislike'] }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                $addFields: {
-                                    userInteraction: {
-                                        // Buscamos en el arreglo 'interactions'
-                                        $filter: {
-                                            input: '$interactions',
-                                            as: 'interaction',
-                                            // La condición es que el userId de la interacción sea el del usuario actual
-                                            cond: { $eq: ['$$interaction.userId', userObjectId] }
-                                        }
-                                    }
-                                }
-                            },
-                            // ETAPA FINAL: Proyecta para quedarte solo con los campos que necesitas.
-                        {
-                            $project: {
-                                _id: 1,
-                                contentId: 1,
-                                title: 1,
-                                comment: 1,
-                                rating: 1,
-                                rating: 1,
-                                createdAt: 1,
-                                likeCount: 1,
-                                dislikeCount: 1,
-                                // Extraemos el primer (y único) username del arreglo 'authorDetails'
-                                username: { $arrayElemAt: ['$authorDetails.username', 0] },
-                                userInteractionType: { $arrayElemAt: ['$userInteraction.type', 0] }
+                    $addFields: {
+                        likeCount: { $size: { $filter: { input: '$interactions', cond: { $eq: ['$$this.type', 'like'] } } } },
+                        dislikeCount: { $size: { $filter: { input: '$interactions', cond: { $eq: ['$$this.type', 'dislike'] } } } },
+                        userInteraction: {
+                            $filter: {
+                                input: '$interactions',
+                                cond: { $eq: ['$$this.userId', userObjectId] }
                             }
                         }
-                    ],
-                    as: 'reviews'
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        contentId: 1,
+                        title: 1,
+                        comment: 1,
+                        rating: 1, // <-- Corregido para que no esté duplicado
+                        createdAt: 1,
+                        likeCount: 1,
+                        dislikeCount: 1,
+                        username: { $arrayElemAt: ['$authorDetails.username', 0] },
+                        userInteractionType: { $arrayElemAt: ['$userInteraction.type', 0] }
+                    }
                 }
-            },
-            {
-            $addFields: {
-                averageRating: { $avg: '$reviews.rating' }
-            }
+            ],
+            as: 'reviews'
         }
-        ];
+    },
+    { $addFields: { averageRating: { $avg: '$reviews.rating' } } }
+];
 
         const result = await collection.aggregate(pipeline).toArray();
         console.log("Datos que el backend está a punto de enviar:", JSON.stringify(result, null, 2));
