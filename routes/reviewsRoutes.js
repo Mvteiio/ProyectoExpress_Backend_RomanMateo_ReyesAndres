@@ -35,4 +35,10 @@ router.post(
     (req, res) => reviewsController.dislikeReview(req, res)
 );
 
+router.delete(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => controller.deleteReview(req, res)
+);
+
 module.exports = router;
