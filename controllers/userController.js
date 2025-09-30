@@ -21,9 +21,9 @@ class UserController {
             const existingUser = await UserRepository.findByEmail(email);
 
             if(existingUser){
-                res.status(400).json({
-                    msg: "El usuario ya existe"
-                });
+                return res.status(400).json({
+                msg: "El usuario ya existe"
+            });
             }
 
             const hashedPassword = await bcrypt.hash(password, 10);
