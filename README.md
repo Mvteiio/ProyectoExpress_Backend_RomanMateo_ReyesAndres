@@ -33,7 +33,7 @@ Instalar Dependencias:
 - Fragmento de código
 
 - PORT=3000
-MONGO_URI="mongodb:mongodb+srv://romancamargo02:TxcijpfOYeDfaRR4@cluster0.vmq8c0v.mongodb.net/
+MONGO_URI=mongodb:mongodb+srv://romancamargo02:TxcijpfOYeDfaRR4@cluster0.vmq8c0v.mongodb.net/
 - JWT_SECRET="secretojwt"
 - DB_NAME = karenFlix
 Ejecutar el Servidor: 
@@ -128,5 +128,6 @@ Documentación: La API está documentada en vivo con Swagger UI, accesible en: h
 (https://github.com/andres8073562/ProyectoExpress_Frontend_RomanMateo_ReyesAndres).
 
 Repositorio Frontend: [PENDIENTE: Insertar enlace al repo del frontend aquí]
+
 
 
