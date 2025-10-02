@@ -9,9 +9,9 @@ class csvController {
 
     async createMovie(req, res){
         try {
-            const {title, description, year, imageUrl, categoryIds} = req.body;
-            const categoryObjectIds = categoryIds.map(id => new ObjectId(id));
-            const csvExisting = await csvRepository.findByTitle(title);
+            const {title, description, year, imageUrl, contentId} = req.body;
+            const contentObjectIds = contentId.map(id => new ObjectId(id));
+            const csvExisting = await csvRepository.findByTitle(id);
 
             if(csvExisting){
                 res.status(400).json({
@@ -20,11 +20,12 @@ class csvController {
             }
 
             const content = await csvRepository.create({
+                id,
                 title,
                 description,
                 year,
                 imageUrl,
-                categoryIds: categoryObjectIds,
+                contentId: contentObjectIds,
                 createdAt: new Date()
             });
             res.status(201).json({
