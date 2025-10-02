@@ -14,7 +14,7 @@ const userRoutes = require('./routes/userRoutes');
 const categoriesRoutes = require('./routes/categoriesRoutes');
 const contentRoutes = require('./routes/contentRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
-
+const historyRoutes = require('./routes/historyRoutes');
 
 
 
@@ -55,6 +55,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/categories', categoriesRoutes);
 app.use('/api/v1/movies', contentRoutes);
 app.use('/api/v1/reviews', reviewsRoutes);
+app.use('/api/v1/history', historyRoutes);
 
 
 async function startServer(){

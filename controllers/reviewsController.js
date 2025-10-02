@@ -1,5 +1,6 @@
 const ReviewsRepository = require('../repositories/reviewsRepository');
 const InteractionsRepository = require('../repositories/interactionsRepository');
+const HistoryRepository = require('../repositories/historyRepository');
 const { ObjectId } = require('mongodb');
 
 class reviewsController {
@@ -26,6 +27,12 @@ class reviewsController {
 
         const newReview = await ReviewsRepository.create(reviewData);
 
+        await HistoryRepository.create({
+            userId: req.user._id,
+            actionType: 'CREATE_REVIEW',
+            targetId: newReview._id
+        });
+
         res.status(201).json({ msg: "Reseña creada con éxito", data: newReview });
 
     } catch (err) {
@@ -51,6 +58,12 @@ class reviewsController {
 
         await ReviewsRepository.update(reviewId, updateData);
 
+        await HistoryRepository.create({
+            userId: req.user._id,
+            actionType: 'UPDATE_REVIEW',
+            targetId: reviewId
+        });
+
         res.status(200).json({ msg: "Reseña actualizada con éxito" });
 
     } catch (err) {
@@ -75,6 +88,12 @@ class reviewsController {
             }
 
             await ReviewsRepository.deleteById(reviewId);
+
+            await HistoryRepository.create({
+                userId: req.user._id,
+                actionType: 'DELETE_REVIEW',
+                targetId: reviewId
+            });
 
             res.status(200).json({ msg: "Reseña eliminada con éxito" });
 
